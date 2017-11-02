@@ -1,0 +1,166 @@
+/* Rodriguez, Wally
+ * Week1Individual: Singleton Pattern Program
+ * 
+ * The key parts of the singleton pattern are:
+ *  A private static variable to store the single instance called the singleton
+ *  A public static method for callers to get a reference to the instance
+ *  A private constructor so no callers can instantiate the object directly
+
+ * Using these key parts, write a Java program that will allow a user of the program
+ * to assign only one runner to each of the 8 lanes of running track in a field.
+ * Include a brief documentation (in the code or in a separate document) to explain
+ * the input (if any), processing and output of the program.  Brief documentation 
+ * does not include inline comments in your java file.  Must be seprate document. 
+ * Submit your assignment using the Assignment Files tab above.
+ * Requirements for grading:
+ * MUST provide .java files and screenshots of program running with various inputs 
+ * used and expected outputs derived  as describe in brief documentation.
+ */
+
+package wallyrodriguez_week1_singleton;
+
+public class Main 
+{
+    private final Interface ui = Interface.getInstance();
+    private final TrackManager trackManager = TrackManager.getTrackInstance();
+
+    //Main class; other classes are TrackManager, AssignRunnerException, Interface
+    
+    private void mainLoop() 
+    {
+
+          ui.display("    Track Lane Assignment Manager     ");
+   
+        String menuSelection;
+        do 
+        {
+
+            ui.displayTitle("Main Menu");
+            ui.display("A: Assign Runner ");
+            ui.display("B: List Lane Assignments");
+            ui.display("C: Reset Lane Assignments");
+            ui.display("D: Exit");
+            ui.displayPrompt("Menu selection (A/B/C/D) : ");
+
+            menuSelection = ui.readInputString();
+
+            if (menuSelection.equalsIgnoreCase("A")) 
+            {
+                ui.displayTitle("Lane Assignment");
+                assignLane();
+            }       
+            else if (menuSelection.equalsIgnoreCase("B"))
+            {
+                ui.displayTitle("Lane Assignments");
+                displayLaneAssignments();
+            } 
+            else if (menuSelection.equalsIgnoreCase("C"))
+            {
+                ui.displayTitle("Lane Assignments Reset");
+                resetLaneAssignments();
+            }
+
+        } 
+        while (!menuSelection.equalsIgnoreCase("D"));
+    }
+
+    // This section will prompt,validate and store runner's assignment.
+    private void assignLane() 
+        {
+       
+        // This section will check for lanes that are available
+        if (!trackManager.hasOpenLane()) 
+            {
+            ui.displayError("Lane(s) Unavailable");
+            return;
+            }
+
+        // This section will display open lanes.
+        try 
+            {
+            StringBuilder sbAvailableLanes = new StringBuilder();
+            for (int i = 1; i <= trackManager.getNumLanes(); i++) 
+                {
+                if (trackManager.isLaneAvailable(i)) 
+                {
+                    sbAvailableLanes.append(" ");
+                    sbAvailableLanes.append(i);
+                }
+            }
+            ui.display("Open lanes:" + sbAvailableLanes);
+            ui.spacer();
+            } 
+        catch (AssignRunnerException assignRunnerException) 
+            {
+            ui.displayError(assignRunnerException.getMessage());
+            }
+  
+        // This section will prompt number and validate it.
+        int lane;
+        do 
+            {
+            try 
+                {
+                ui.displayPrompt("Enter lane number: ");
+                lane = ui.readInputInt();
+                if (!trackManager.isLaneAvailable(lane)) {
+                    ui.displayError("Lane " + lane + " is already assigned to " + trackManager.getLaneAssignment(lane));
+                    lane = 0;
+                }
+            } 
+            catch (NumberFormatException nfe) 
+                {
+                ui.displayError("Invalid lane number");
+                lane = 0;           
+                } 
+            catch (AssignRunnerException assignRunnerException) 
+                {
+                ui.displayError(assignRunnerException.getMessage());
+                lane = 0;
+                }
+            } 
+        while (lane == 0);
+
+        // This section will request the runner's name
+        String runnerName;
+        do 
+            {
+            ui.displayPrompt("Enter runner's name: ");
+            runnerName = ui.readInputString();
+            } 
+        while ("".equals(runnerName));
+
+        // This section will store name and lane number
+        try {
+
+            trackManager.assignRunner(lane, runnerName);
+            } catch (AssignRunnerException assignRunnerException) {
+            ui.displayError(assignRunnerException.getMessage());
+            }
+
+        displayLaneAssignments();
+    }
+
+    // This section displays the list of lane selections
+    private void displayLaneAssignments() 
+        {
+        String[] laneAssignments = trackManager.getLaneAssignments();
+        for (int i = 0; i < laneAssignments.length; i++) 
+            {
+            ui.display(" " + (i + 1) + " : " + (laneAssignments[i] != null ? laneAssignments[i] : "*"));
+            }
+        }
+    // This section enables user to reset assignemnts and names
+    private void resetLaneAssignments()     
+        {
+        trackManager.resetLaneAssignments();
+        displayLaneAssignments();
+        }
+
+    public static void main(String[] args) 
+        {
+        Main m = new Main();
+        m.mainLoop();
+        }
+
+}
