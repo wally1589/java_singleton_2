@@ -1,20 +1,5 @@
 /* Rodriguez, Wally
  * Week1Individual: Singleton Pattern Program
- * 
- * The key parts of the singleton pattern are:
- *  A private static variable to store the single instance called the singleton
- *  A public static method for callers to get a reference to the instance
- *  A private constructor so no callers can instantiate the object directly
-
- * Using these key parts, write a Java program that will allow a user of the program
- * to assign only one runner to each of the 8 lanes of running track in a field.
- * Include a brief documentation (in the code or in a separate document) to explain
- * the input (if any), processing and output of the program.  Brief documentation 
- * does not include inline comments in your java file.  Must be seprate document. 
- * Submit your assignment using the Assignment Files tab above.
- * Requirements for grading:
- * MUST provide .java files and screenshots of program running with various inputs 
- * used and expected outputs derived  as describe in brief documentation.
  */
 
 package wallyrodriguez_week1_singleton;
