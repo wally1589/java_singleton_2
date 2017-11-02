@@ -1,0 +1,98 @@
+
+    /** These methods will display: Singleton instance variable of TrackManager
+     * Total number of lanes available, array of lane assignment information
+     * Array of lane assignment information, default value to indicate an open lane
+     * Default private TrackManager constructor to support singleton pattern
+     */
+
+
+package wallyrodriguez_week1_singleton;
+
+public class TrackManager
+    {
+    private static final TrackManager Singleton = new TrackManager(8);
+
+    
+    public static TrackManager getTrackInstance() 
+        {
+        return Singleton;
+        }
+    private int numLanes;
+    private String[] lanes;
+    private final static String LanesAvailable = "-";
+    private TrackManager(int numLanes) 
+        {
+        this.numLanes = numLanes;
+        this.lanes = new String[numLanes];
+        resetLaneAssignments();
+        }
+    public void assignRunner(int laneNumber, String runner) throws AssignRunnerException 
+        {
+        if (laneNumber < 1 || laneNumber > numLanes) 
+            {
+            throw new AssignRunnerException("Invalid lane number - " + laneNumber);
+            }
+
+        if (!isLaneAvailable(laneNumber)) 
+            {
+            throw new AssignRunnerException("Lane number already assigned - " + laneNumber);
+            }
+        lanes[laneNumber - 1] = runner;
+        }
+
+    // this will reset all lane values
+       public void resetLaneAssignments() 
+        {
+        for (int i = 0; i < numLanes; i++) 
+            {
+            lanes[i] = LanesAvailable;
+            }
+        }
+
+    public boolean isLaneAvailable(int laneNumber) throws AssignRunnerException
+        {
+        if (laneNumber < 1 || laneNumber > numLanes) 
+        {
+            throw new AssignRunnerException("Invalid lane number - " + laneNumber);
+        }
+        return LanesAvailable.equals(lanes[laneNumber - 1]);
+        }
+
+    // Checks if a open lane existing within the field
+   public boolean hasOpenLane() 
+        {
+        try {
+            for (int i = 1; i <= numLanes; i++) 
+            {
+                if (isLaneAvailable(i)) 
+                {
+                    return true;
+                }
+            }
+        } 
+        catch (AssignRunnerException e) 
+            
+            {
+            return false;
+            }
+        return false;
+        }
+    public String[] getLaneAssignments() 
+        {
+        return lanes;
+        }
+
+     public String getLaneAssignment(int laneNumber) throws AssignRunnerException
+        {
+        if (laneNumber < 1 || laneNumber > numLanes) 
+            {
+            throw new AssignRunnerException("Invalid lane number - " + laneNumber);
+            }
+        return lanes[laneNumber - 1];
+        }
+   
+    public int getNumLanes() 
+        {
+        return numLanes;
+        }
+    }
